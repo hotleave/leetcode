@@ -1,8 +1,5 @@
 package cn.hotleave.leetcode;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * https://leetcode.com/problems/unique-paths/
  *
@@ -21,43 +18,21 @@ public class UniquePaths62 {
      * @return
      */
     public int uniquePaths(int m, int n) {
-        if (m == 1 || n == 1) {
-            return 1;
-        }
+        // 根据递归逻辑， uniquePaths(m,n) = uniquePaths(m-1, n) + uniquePaths(m, n-1);
 
-        if (m == 2) {
-            return n;
-        }
-
-        if (n == 2) {
-            return m;
-        }
-
-        // 5,5 can be split into 4,5 + 4,4 + 4,3 + 4,2 + 51
-        // 4,5 can be split into 3,5 + 3,4 + 3,3 + 3,2 + 41
-        // and so on
-
+        // 用数组保存m-1行各列的uniquePaths结果
         int[] numbers = new int[n];
-        Arrays.fill(numbers, 1);
+        numbers[0] = 1;
 
-        int times, tmp;
-        int total = 0;
-        boolean add;
-        for (int i = m - 1; i > 1; i--) {
-            times = 0;
-            add = i == 2;
-            for (int j = 0; j < n; j++) {
-                tmp = numbers[j];
-                if (add) {
-                    total += tmp + times;
-                } else {
-                    numbers[j] += times;
-                }
-                times += tmp;
+        for (int i = 0; i < m; i++) {
+            // uniquePaths(x, 1) == 1, 故不再重复计算第一列
+            for (int j = 1; j < n; j++) {
+                // 更新当前行各列的uniquePath数
+                numbers[j] = numbers[j] + numbers[j - 1];
             }
         }
 
-        return total;
+        return numbers[n - 1];
     }
 
     private int badUniquePaths(int m, int n) {
